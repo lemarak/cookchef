@@ -6,7 +6,6 @@ import { useState } from "react";
 const Recipe = ({ title, image }) => {
   const [liked, setLiked] = useState(false);
   const handleClickFavorite = () => {
-    console.log(liked);
     setLiked(!liked);
   };
 
