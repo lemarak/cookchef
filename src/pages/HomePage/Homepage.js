@@ -1,8 +1,8 @@
-import styles from "./Content.module.scss";
-import Recipe from "./Recipe";
+import styles from "./Homepage.module.scss";
+import Recipe from "./components/Recipe/Recipe";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { data } from "../data/recipe";
+import { data } from "../../data/recipe";
 import { useState } from "react";
 
 const Content = () => {

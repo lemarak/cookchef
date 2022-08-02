@@ -1,9 +1,9 @@
 import styles from "./Header.module.scss";
-import cookchef from "../assets/images/cookchef.png";
+import cookchef from "../../assets/images/cookchef.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import HeaderMenu from "./HeaderMenu";
+import HeaderMenu from "./components/HeaderMenu/HeaderMenu";
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
