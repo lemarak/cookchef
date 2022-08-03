@@ -11,7 +11,9 @@ const Homepage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("");
+  const [page, setPage] = useState(1);
   const BASE_URL_API = useContext(ApiContext);
+  const LIMIT = 6;
 
   useEffect(() => {
     let cancel = false;
@@ -19,10 +21,13 @@ const Homepage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const res = await fetch(BASE_URL_API);
+        const skip = (page - 1) * LIMIT;
+        const res = await fetch(`${BASE_URL_API}?skip=${skip}&limit=${LIMIT}`);
         if (res.ok && !cancel) {
           const newRecipes = await res.json();
-          setRecipes(Array.isArray(newRecipes) ? newRecipes : [newRecipes]);
+          setRecipes((r) =>
+            Array.isArray(newRecipes) ? [...r, ...newRecipes] : [newRecipes]
+          );
         } else if (!cancel) {
           setError("Ooops, erreur res.ok !!!");
         }
@@ -34,7 +39,7 @@ const Homepage = () => {
     };
     fetchRecipes();
     return () => (cancel = true);
-  }, [BASE_URL_API]);
+  }, [BASE_URL_API, page]);
 
   const handleInputSearch = (e) => {
     const filter = e.target.value;
@@ -49,7 +54,10 @@ const Homepage = () => {
 
   return (
     <div className="flex-fill container d-flex flex-column p-20">
-      <h1 className="my-30">Découvrez nos nouvelles recettes</h1>
+      <h1 className="my-30">
+        Découvrez nos nouvelles recettes{" "}
+        <small>({recipes.length} recettes)</small>
+      </h1>
       {error && <span>{error}</span>}
       <div
         className={`${styles.contentCard} card flex-fill d-flex flex-column p-20 mb-20`}
@@ -66,7 +74,7 @@ const Homepage = () => {
             placeholder="Rechercher"
           />
         </div>
-        {isLoading ? (
+        {isLoading && !recipes.length ? (
           <Loading />
         ) : (
           <div className={styles.grid}>
@@ -81,6 +89,11 @@ const Homepage = () => {
               ))}
           </div>
         )}
+        <div className="d-flex flex-row justify-content-center align-items-center p-20">
+          <button onClick={() => setPage(page + 1)} className="btn btn-primary">
+            Charger plus de recettes...
+          </button>
+        </div>
       </div>
     </div>
   );
