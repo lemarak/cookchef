@@ -1,16 +1,44 @@
 import styles from "./Recipe.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { ApiContext } from "../../../../context/ApiContext";
 
-const Recipe = ({ title, image }) => {
-  const [liked, setLiked] = useState(false);
-  const handleClickFavorite = () => {
-    setLiked(!liked);
+const Recipe = ({ recipe: { _id, title, image, liked }, toggleLikeRecipe }) => {
+  const [isLoading, setIsloading] = useState(false);
+  const [error, setError] = useState(null);
+  const BASE_URL_API = useContext(ApiContext);
+
+  const handleClickFavorite = async () => {
+    try {
+      setIsloading(true);
+      setError(null);
+      const res = await fetch(`${BASE_URL_API}/${_id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          liked: !liked,
+        }),
+      });
+      if (res.ok) {
+        const updatedRecipe = await res.json();
+        toggleLikeRecipe(updatedRecipe);
+      } else {
+        setError("Ooops !!! Il y a une erreur...");
+      }
+    } catch (error) {
+      setError("Ooops !!! Il y a une erreur...");
+    } finally {
+      setIsloading(false);
+    }
   };
 
   return (
     <div onClick={handleClickFavorite} className={styles.recipe}>
+      {error && <span>{error}</span>}
+      {isLoading && <span>Enregistrement...</span>}
       <div className={styles.imageContainer}>
         <img src={image} alt="recette" />
       </div>
