@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import styles from "./Homepage.module.scss";
 import Recipe from "./components/Recipe/Recipe";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../../components/Loading/Loading";
 import { ApiContext } from "../../context/ApiContext";
+import Search from "./components/Search/Search";
 
 const Homepage = () => {
   const [recipes, setRecipes] = useState([]);
@@ -41,10 +40,10 @@ const Homepage = () => {
     return () => (cancel = true);
   }, [BASE_URL_API, page]);
 
-  const handleInputSearch = (e) => {
-    const filter = e.target.value;
-    setFilter(filter.trim().toLowerCase());
-  };
+  // const handleInputSearch = (e) => {
+  //   const filter = e.target.value;
+  //   setFilter(filter.trim().toLowerCase());
+  // };
 
   const updateRecipe = (updatedRecipe) => {
     setRecipes(
@@ -62,7 +61,8 @@ const Homepage = () => {
       <div
         className={`${styles.contentCard} card flex-fill d-flex flex-column p-20 mb-20`}
       >
-        <div
+        <Search setFilter={setFilter} />
+        {/* <div
           className={`d-flex flex-row justify-content-center align-items-center my-30 ${styles.searchBar}`}
         >
           <FontAwesomeIcon icon={faMagnifyingGlass} className="mr-15" />
@@ -73,7 +73,7 @@ const Homepage = () => {
             name=""
             placeholder="Rechercher"
           />
-        </div>
+        </div> */}
         {isLoading && !recipes.length ? (
           <Loading />
         ) : (
