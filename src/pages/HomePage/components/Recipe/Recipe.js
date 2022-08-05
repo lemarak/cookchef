@@ -1,15 +1,19 @@
 import styles from "./Recipe.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useState } from "react";
 import { ApiContext } from "../../../../context/ApiContext";
 
-const Recipe = ({ recipe: { _id, title, image, liked }, toggleLikeRecipe }) => {
+const Recipe = ({
+  recipe: { _id, title, image, liked },
+  toggleLikeRecipe,
+  deleteRecipe,
+}) => {
   const [isLoading, setIsloading] = useState(false);
   const [error, setError] = useState(null);
   const BASE_URL_API = useContext(ApiContext);
 
-  const handleClickFavorite = async () => {
+  const handleClickLike = async () => {
     try {
       setIsloading(true);
       setError(null);
@@ -35,8 +39,29 @@ const Recipe = ({ recipe: { _id, title, image, liked }, toggleLikeRecipe }) => {
     }
   };
 
+  const handleClickDelete = async (e) => {
+    e.stopPropagation();
+    try {
+      const res = await fetch(`${BASE_URL_API}/${_id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        deleteRecipe(_id);
+      } else {
+        console.log("Suppression impossible");
+      }
+    } catch (error) {
+      console.log("Suppression impossible");
+    }
+  };
+
   return (
-    <div onClick={handleClickFavorite} className={styles.recipe}>
+    <div onClick={handleClickLike} className={styles.recipe}>
+      <FontAwesomeIcon
+        onClick={handleClickDelete}
+        icon={faXmark}
+        className={styles.xmark}
+      />
       {error && <span>{error}</span>}
       {isLoading && <span>Enregistrement...</span>}
       <div className={styles.imageContainer}>

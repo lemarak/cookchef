@@ -18,36 +18,14 @@ const Homepage = () => {
     BASE_URL_API,
     page
   );
-  // useEffect(() => {
-  //   let cancel = false;
-  //   const fetchRecipes = async () => {
-  //     setIsLoading(true);
-  //     setError(null);
-  //     try {
-  //       const skip = (page - 1) * LIMIT;
-  //       const res = await fetch(`${BASE_URL_API}?skip=${skip}&limit=${LIMIT}`);
-  //       if (res.ok && !cancel) {
-  //         const newRecipes = await res.json();
-  //         setRecipes((r) =>
-  //           Array.isArray(newRecipes) ? [...r, ...newRecipes] : [newRecipes]
-  //         );
-  //       } else if (!cancel) {
-  //         setError("Ooops, erreur res.ok !!!");
-  //       }
-  //     } catch (error) {
-  //       setError("Ooops, erreur catch!!!");
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-  //   fetchRecipes();
-  //   return () => (cancel = true);
-  // }, [BASE_URL_API, page]);
 
   const updateRecipe = (updatedRecipe) => {
     setRecipes(
       recipes.map((r) => (r._id === updatedRecipe._id ? updatedRecipe : r))
     );
+  };
+  const deleteRecipe = (id) => {
+    setRecipes(recipes.filter((r) => r._id !== id));
   };
 
   return (
@@ -72,6 +50,7 @@ const Homepage = () => {
                 <Recipe
                   key={r._id}
                   recipe={r}
+                  deleteRecipe={deleteRecipe}
                   toggleLikeRecipe={updateRecipe}
                 />
               ))}
