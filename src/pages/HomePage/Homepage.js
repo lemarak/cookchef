@@ -1,49 +1,48 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import styles from "./Homepage.module.scss";
 import Recipe from "./components/Recipe/Recipe";
 import Loading from "../../components/Loading/Loading";
 import { ApiContext } from "../../context/ApiContext";
 import Search from "./components/Search/Search";
+import { useFetchData } from "../../hooks";
 
 const Homepage = () => {
-  const [recipes, setRecipes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const [recipes, setRecipes] = useState([]);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [error, setError] = useState(null);
   const [filter, setFilter] = useState("");
   const [page, setPage] = useState(1);
   const BASE_URL_API = useContext(ApiContext);
-  const LIMIT = 6;
 
-  useEffect(() => {
-    let cancel = false;
-    const fetchRecipes = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const skip = (page - 1) * LIMIT;
-        const res = await fetch(`${BASE_URL_API}?skip=${skip}&limit=${LIMIT}`);
-        if (res.ok && !cancel) {
-          const newRecipes = await res.json();
-          setRecipes((r) =>
-            Array.isArray(newRecipes) ? [...r, ...newRecipes] : [newRecipes]
-          );
-        } else if (!cancel) {
-          setError("Ooops, erreur res.ok !!!");
-        }
-      } catch (error) {
-        setError("Ooops, erreur catch!!!");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRecipes();
-    return () => (cancel = true);
-  }, [BASE_URL_API, page]);
-
-  // const handleInputSearch = (e) => {
-  //   const filter = e.target.value;
-  //   setFilter(filter.trim().toLowerCase());
-  // };
+  const [[recipes, setRecipes], isLoading, error] = useFetchData(
+    BASE_URL_API,
+    page
+  );
+  // useEffect(() => {
+  //   let cancel = false;
+  //   const fetchRecipes = async () => {
+  //     setIsLoading(true);
+  //     setError(null);
+  //     try {
+  //       const skip = (page - 1) * LIMIT;
+  //       const res = await fetch(`${BASE_URL_API}?skip=${skip}&limit=${LIMIT}`);
+  //       if (res.ok && !cancel) {
+  //         const newRecipes = await res.json();
+  //         setRecipes((r) =>
+  //           Array.isArray(newRecipes) ? [...r, ...newRecipes] : [newRecipes]
+  //         );
+  //       } else if (!cancel) {
+  //         setError("Ooops, erreur res.ok !!!");
+  //       }
+  //     } catch (error) {
+  //       setError("Ooops, erreur catch!!!");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchRecipes();
+  //   return () => (cancel = true);
+  // }, [BASE_URL_API, page]);
 
   const updateRecipe = (updatedRecipe) => {
     setRecipes(
@@ -62,18 +61,7 @@ const Homepage = () => {
         className={`${styles.contentCard} card flex-fill d-flex flex-column p-20 mb-20`}
       >
         <Search setFilter={setFilter} />
-        {/* <div
-          className={`d-flex flex-row justify-content-center align-items-center my-30 ${styles.searchBar}`}
-        >
-          <FontAwesomeIcon icon={faMagnifyingGlass} className="mr-15" />
-          <input
-            onInput={handleInputSearch}
-            className="flex-fill"
-            type="text"
-            name=""
-            placeholder="Rechercher"
-          />
-        </div> */}
+
         {isLoading && !recipes.length ? (
           <Loading />
         ) : (
