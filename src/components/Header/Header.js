@@ -5,16 +5,29 @@ import { faBars, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import HeaderMenu from "./components/HeaderMenu/HeaderMenu";
 
-const Header = () => {
+const Header = ({ setPage }) => {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
     <header className={`${styles.header} d-flex flex-row align-items-center`}>
       <div className="flex-fill">
-        <img src={cookchef} alt="logo cookchef" />
+        <img
+          onClick={() => setPage("homepage")}
+          src={cookchef}
+          alt="logo cookchef"
+        />
       </div>
       <ul className={styles.headerList}>
-        <button className="mr-5 btn btn-reverse-primary">
+        <button
+          onClick={() => {
+            setPage("admin");
+          }}
+          className="mr-15 btn btn-reverse-primary"
+        >
+          {/* <FontAwesomeIcon icon={faHeart} className="mr-5" /> */}
+          <span>nouvelle recette</span>
+        </button>
+        <button className="mr-15 btn btn-reverse-primary">
           <FontAwesomeIcon icon={faHeart} className="mr-5" />
           <span>souhaits</span>
         </button>
@@ -28,7 +41,7 @@ const Header = () => {
       {showMenu && (
         <>
           <div onClick={() => setShowMenu(false)} className="calc"></div>
-          <HeaderMenu />
+          <HeaderMenu setPage={setPage} />
         </>
       )}
     </header>
