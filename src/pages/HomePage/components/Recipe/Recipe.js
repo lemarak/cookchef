@@ -1,8 +1,9 @@
-import styles from "./Recipe.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useState } from "react";
 import { ApiContext } from "../../../../context/ApiContext";
+
+import styles from "./Recipe.module.scss";
 
 const Recipe = ({
   recipe: { _id, title, image, liked },

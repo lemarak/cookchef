@@ -3,9 +3,9 @@ import { useState } from "react";
 import Homepage from "./pages/HomePage/Homepage";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
+import Admin from "./pages/Admin/Admin";
 
 import styles from "./App.module.scss";
-import Admin from "./pages/Admin/Admin";
 // import seedRecipes from "./data/seed";
 
 // seedRecipes();
