@@ -1,59 +1,20 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useContext, useState } from "react";
-import { ApiContext } from "../../../../context/ApiContext";
+import { useState } from "react";
 
 import styles from "./Recipe.module.scss";
 
-const Recipe = ({
-  recipe: { _id, title, image, liked },
-  toggleLikeRecipe,
-  deleteRecipe,
-}) => {
+const Recipe = ({ recipe, updateRecipe, deleteRecipe }) => {
   const [isLoading, setIsloading] = useState(false);
   const [error, setError] = useState(null);
-  const BASE_URL_API = useContext(ApiContext);
 
   const handleClickLike = async () => {
-    try {
-      setIsloading(true);
-      setError(null);
-      const res = await fetch(`${BASE_URL_API}/${_id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          liked: !liked,
-        }),
-      });
-      if (res.ok) {
-        const updatedRecipe = await res.json();
-        toggleLikeRecipe(updatedRecipe);
-      } else {
-        setError("Ooops !!! Il y a une erreur...");
-      }
-    } catch (error) {
-      setError("Ooops !!! Il y a une erreur...");
-    } finally {
-      setIsloading(false);
-    }
+    updateRecipe({ ...recipe, liked: !recipe.liked });
   };
 
   const handleClickDelete = async (e) => {
     e.stopPropagation();
-    try {
-      const res = await fetch(`${BASE_URL_API}/${_id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        deleteRecipe(_id);
-      } else {
-        console.log("Suppression impossible");
-      }
-    } catch (error) {
-      console.log("Suppression impossible");
-    }
+    deleteRecipe(recipe._id);
   };
 
   return (
@@ -66,15 +27,15 @@ const Recipe = ({
       {error && <span>{error}</span>}
       {isLoading && <span>Enregistrement...</span>}
       <div className={styles.imageContainer}>
-        <img src={image} alt="recette" />
+        <img src={recipe.image} alt="recette" />
       </div>
       <div
         className={` ${styles.recipeTitle} d-flex flex-column justify-content-center align-items-center`}
       >
-        <h3 className="mb-10">{title}</h3>
+        <h3 className="mb-10">{recipe.title}</h3>
         <FontAwesomeIcon
           icon={faHeart}
-          className={`${liked ? "text-primary" : ""}`}
+          className={`${recipe.liked ? "text-primary" : ""}`}
         />
       </div>
     </div>

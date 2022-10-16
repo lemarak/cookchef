@@ -19,13 +19,44 @@ const Homepage = () => {
     page
   );
 
-  const updateRecipe = (updatedRecipe) => {
-    setRecipes(
-      recipes.map((r) => (r._id === updatedRecipe._id ? updatedRecipe : r))
-    );
+  const updateRecipe = async (updatedRecipe) => {
+    try {
+      const { _id, ...restRecipe } = updatedRecipe;
+      const res = await fetch(`${BASE_URL_API}/${_id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(restRecipe),
+      });
+      if (res.ok) {
+        const updatedRecipe = await res.json();
+        setRecipes(
+          recipes.map((r) => (r._id === updatedRecipe._id ? updatedRecipe : r))
+        );
+      } else {
+        console.log("Erreur");
+      }
+    } catch (error) {
+      console.log("Ooops !!! Il y a une erreur...");
+    } finally {
+      console.log("OK");
+    }
   };
-  const deleteRecipe = (id) => {
-    setRecipes(recipes.filter((r) => r._id !== id));
+  const deleteRecipe = async (id) => {
+    try {
+      const res = await fetch(`${BASE_URL_API}/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        console.log("res.ok");
+        setRecipes(recipes.filter((r) => r._id !== id));
+      } else {
+        console.log("Suppression impossible");
+      }
+    } catch (error) {
+      console.log("Suppression impossible");
+    }
   };
 
   return (
@@ -51,7 +82,7 @@ const Homepage = () => {
                   key={r._id}
                   recipe={r}
                   deleteRecipe={deleteRecipe}
-                  toggleLikeRecipe={updateRecipe}
+                  updateRecipe={updateRecipe}
                 />
               ))}
           </div>

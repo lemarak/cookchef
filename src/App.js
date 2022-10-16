@@ -7,9 +7,9 @@ import Admin from "./pages/Admin/Admin";
 
 import styles from "./App.module.scss";
 import { Outlet } from "react-router-dom";
-// import seedRecipes from "./data/seed";
+import seedRecipes from "./data/seed";
 
-// seedRecipes();
+//seedRecipes();
 
 function App() {
   return (
