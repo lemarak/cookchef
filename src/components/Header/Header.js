@@ -4,33 +4,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import HeaderMenu from "./components/HeaderMenu/HeaderMenu";
+import { NavLink } from "react-router-dom";
 
-const Header = ({ setPage }) => {
+const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
     <header className={`${styles.header} d-flex flex-row align-items-center`}>
       <div className="flex-fill">
-        <img
-          onClick={() => setPage("homepage")}
-          src={cookchef}
-          alt="logo cookchef"
-        />
+        <NavLink to="/">
+          <img src={cookchef} alt="logo cookchef" />
+        </NavLink>
       </div>
       <ul className={styles.headerList}>
-        <button
-          onClick={() => {
-            setPage("admin");
-          }}
-          className="mr-15 btn btn-reverse-primary"
-        >
-          {/* <FontAwesomeIcon icon={faHeart} className="mr-5" /> */}
-          <span>nouvelle recette</span>
-        </button>
-        <button className="mr-15 btn btn-reverse-primary">
-          <FontAwesomeIcon icon={faHeart} className="mr-5" />
-          <span>souhaits</span>
-        </button>
+        <NavLink to="/admin">
+          <button className="mr-15 btn btn-reverse-primary">
+            {/* <FontAwesomeIcon icon={faHeart} className="mr-5" /> */}
+            <span>nouvelle recette</span>
+          </button>
+        </NavLink>
+        <NavLink to="/">
+          <button className="mr-15 btn btn-reverse-primary">
+            <FontAwesomeIcon icon={faHeart} className="mr-5" />
+            <span>souhaits</span>
+          </button>
+        </NavLink>
         <button className="btn btn-primary">connexion</button>
       </ul>
       <FontAwesomeIcon
@@ -41,7 +39,7 @@ const Header = ({ setPage }) => {
       {showMenu && (
         <>
           <div onClick={() => setShowMenu(false)} className="calc"></div>
-          <HeaderMenu setPage={setPage} />
+          <HeaderMenu />
         </>
       )}
     </header>
