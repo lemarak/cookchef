@@ -5,6 +5,7 @@ import Loading from "../../components/Loading/Loading";
 import { ApiContext } from "../../context/ApiContext";
 import Search from "./components/Search/Search";
 import { useFetchData } from "../../hooks";
+import axios from "axios";
 
 const Homepage = () => {
   // const [recipes, setRecipes] = useState([]);
@@ -22,15 +23,11 @@ const Homepage = () => {
   const updateRecipe = async (updatedRecipe) => {
     try {
       const { _id, ...restRecipe } = updatedRecipe;
-      const res = await fetch(`${BASE_URL_API}/${_id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(restRecipe),
+      const res = await axios.put(`${BASE_URL_API}/${_id}`, {
+        ...restRecipe,
       });
-      if (res.ok) {
-        const updatedRecipe = await res.json();
+      if (res.status === 200) {
+        const updatedRecipe = res.data;
         setRecipes(
           recipes.map((r) => (r._id === updatedRecipe._id ? updatedRecipe : r))
         );
@@ -38,24 +35,19 @@ const Homepage = () => {
         console.log("Erreur");
       }
     } catch (error) {
-      console.log("Ooops !!! Il y a une erreur...");
-    } finally {
-      console.log("OK");
+      console.log(error.message);
     }
   };
   const deleteRecipe = async (id) => {
     try {
-      const res = await fetch(`${BASE_URL_API}/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        console.log("res.ok");
+      const res = await axios.delete(`${BASE_URL_API}/${id}`);
+      if (res.status === 200) {
         setRecipes(recipes.filter((r) => r._id !== id));
       } else {
         console.log("Suppression impossible");
       }
     } catch (error) {
-      console.log("Suppression impossible");
+      console.log(error.message);
     }
   };
 

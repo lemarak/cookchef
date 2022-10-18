@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { ApiContext } from "../../../context/ApiContext";
 
 import styles from "./RecipeForm.module.scss";
+import axios from "axios";
 
 const RecipeForm = () => {
   const BASE_URL_API = useContext(ApiContext);
@@ -38,21 +39,19 @@ const RecipeForm = () => {
   });
 
   const submit = async (values) => {
-    console.log(`values :`, values);
     try {
       clearErrors();
-      const response = await fetch(BASE_URL_API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+      const response = await axios.post(BASE_URL_API, {
+        title: values.title,
+        image: values.image,
       });
-      if (response.ok) {
+      if (response.status === 200) {
         reset(defaultValues);
       } else {
         setError("generic", { type: "generic", message: "Il y a une erreur" });
       }
     } catch (error) {
-      setError("generic", { type: "generic", message: "Il y a une erreur" });
+      setError("generic", { type: "generic", message: error.message });
     }
   };
 

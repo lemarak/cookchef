@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 export const useFetchData = (url, page) => {
@@ -18,9 +19,10 @@ export const useFetchData = (url, page) => {
           queryParam.append("skip", (page - 1) * LIMIT);
           queryParam.append("sort", "createdAt:-1");
         }
-        const res = await fetch(`${url}?${queryParam}`);
-        if (res.ok && !cancel) {
-          const newData = await res.json();
+        const res = await axios.get(`${url}?${queryParam}`);
+
+        if (res.status === 200 && !cancel) {
+          const newData = res.data;
           setData((r) =>
             Array.isArray(newData) ? [...r, ...newData] : [newData]
           );
