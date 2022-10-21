@@ -1,11 +1,10 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import styles from "./Homepage.module.scss";
 import Recipe from "./components/Recipe/Recipe";
 import Loading from "../../components/Loading/Loading";
-import { ApiContext } from "../../context/ApiContext";
 import Search from "./components/Search/Search";
 import { useFetchRecipe } from "../../hooks";
-import axios from "axios";
+import { deleteRecipeApi, updateRecipeApi } from "../../api";
 
 const Homepage = () => {
   // const [recipes, setRecipes] = useState([]);
@@ -13,42 +12,19 @@ const Homepage = () => {
   // const [error, setError] = useState(null);
   const [filter, setFilter] = useState("");
   const [page, setPage] = useState(1);
-  const BASE_URL_API = useContext(ApiContext);
 
-  const [[recipes, setRecipes], isLoading, error] = useFetchRecipe(
-    BASE_URL_API,
-    page
-  );
+  const [[recipes, setRecipes], isLoading, error] = useFetchRecipe(page);
 
   const updateRecipe = async (updatedRecipe) => {
-    try {
-      const { _id, ...restRecipe } = updatedRecipe;
-      const res = await axios.put(`${BASE_URL_API}/${_id}`, {
-        ...restRecipe,
-      });
-      if (res.status === 200) {
-        const updatedRecipe = res.data;
-        setRecipes(
-          recipes.map((r) => (r._id === updatedRecipe._id ? updatedRecipe : r))
-        );
-      } else {
-        console.log("Erreur");
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
+    const savedRecipe = await updateRecipeApi(updatedRecipe);
+    setRecipes(
+      recipes.map((r) => (r._id === savedRecipe._id ? savedRecipe : r))
+    );
   };
+
   const deleteRecipe = async (id) => {
-    try {
-      const res = await axios.delete(`${BASE_URL_API}/${id}`);
-      if (res.status === 200) {
-        setRecipes(recipes.filter((r) => r._id !== id));
-      } else {
-        console.log("Suppression impossible");
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
+    const deletedId = await deleteRecipeApi(id);
+    setRecipes(recipes.filter((r) => r._id !== deletedId));
   };
 
   return (

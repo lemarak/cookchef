@@ -1,8 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { getRecipes } from "../api";
+import { getRecipesApi } from "../api";
 
-export const useFetchRecipe = (url, page) => {
+export const useFetchRecipe = (page) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,9 +19,9 @@ export const useFetchRecipe = (url, page) => {
           queryParam.append("skip", (page - 1) * LIMIT);
           queryParam.append("sort", "createdAt:-1");
         }
-        const newData = await getRecipes(queryParam);
+        const newData = await getRecipesApi(queryParam);
         if (!cancel) {
-          setData(newData);
+          setData((x) => [...x, ...newData]);
         }
       } catch (error) {
         setError("Ooops, erreur catch!!!");
@@ -34,6 +33,6 @@ export const useFetchRecipe = (url, page) => {
     };
     fetchData();
     return () => (cancel = true);
-  }, [url, page]);
+  }, [page]);
   return [[data, setData], isLoading, error];
 };

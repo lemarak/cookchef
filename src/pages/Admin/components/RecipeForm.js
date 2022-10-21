@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { ApiContext } from "../../../context/ApiContext";
 
 import styles from "./RecipeForm.module.scss";
-import axios from "axios";
+import { createRecipeApi } from "../../../api";
 
 const RecipeForm = () => {
   const BASE_URL_API = useContext(ApiContext);
@@ -41,11 +41,8 @@ const RecipeForm = () => {
   const submit = async (values) => {
     try {
       clearErrors();
-      const response = await axios.post(BASE_URL_API, {
-        title: values.title,
-        image: values.image,
-      });
-      if (response.status === 200) {
+      const newRecipe = await createRecipeApi(values);
+      if (newRecipe) {
         reset(defaultValues);
       } else {
         setError("generic", { type: "generic", message: "Il y a une erreur" });
