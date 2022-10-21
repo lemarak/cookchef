@@ -4,7 +4,7 @@ import Recipe from "./components/Recipe/Recipe";
 import Loading from "../../components/Loading/Loading";
 import { ApiContext } from "../../context/ApiContext";
 import Search from "./components/Search/Search";
-import { useFetchData } from "../../hooks";
+import { useFetchRecipe } from "../../hooks";
 import axios from "axios";
 
 const Homepage = () => {
@@ -15,7 +15,7 @@ const Homepage = () => {
   const [page, setPage] = useState(1);
   const BASE_URL_API = useContext(ApiContext);
 
-  const [[recipes, setRecipes], isLoading, error] = useFetchData(
+  const [[recipes, setRecipes], isLoading, error] = useFetchRecipe(
     BASE_URL_API,
     page
   );

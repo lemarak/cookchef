@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { getRecipes } from "../api";
 
-export const useFetchData = (url, page) => {
+export const useFetchRecipe = (url, page) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,20 +20,16 @@ export const useFetchData = (url, page) => {
           queryParam.append("skip", (page - 1) * LIMIT);
           queryParam.append("sort", "createdAt:-1");
         }
-        const res = await axios.get(`${url}?${queryParam}`);
-
-        if (res.status === 200 && !cancel) {
-          const newData = res.data;
-          setData((r) =>
-            Array.isArray(newData) ? [...r, ...newData] : [newData]
-          );
-        } else if (!cancel) {
-          setError("Ooops, erreur res.ok !!!");
+        const newData = await getRecipes(queryParam);
+        if (!cancel) {
+          setData(newData);
         }
       } catch (error) {
         setError("Ooops, erreur catch!!!");
       } finally {
-        setIsLoading(false);
+        if (!cancel) {
+          setIsLoading(false);
+        }
       }
     };
     fetchData();
